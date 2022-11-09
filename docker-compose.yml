@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  python:
+    build: ./
+    image: amazon-analytics
+    container_name: amazon-analytics
+    volumes:
+      - ./src:/work
+    working_dir: /work
+    tty: true
+  
