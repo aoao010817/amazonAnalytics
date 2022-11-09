@@ -53,8 +53,16 @@ class Selenium():
         self.driver.implicitly_wait(10)
         return html_text
 
+    # numページ分の商品を取得
+    def get_item_list_sumpage(self, num):
+        for _ in range(num):
+            html_text = self.get_source()
+            self.__get_item_list(html_text)
+            self.__next_item_page(html_text)
+
+
     # 開いているamazonページから商品リストを取得
-    def get_item_list(self, html_text) -> list:
+    def __get_item_list(self, html_text) -> list:
         soup = bs(html_text, 'html.parser')
         for item in soup.select(".s-title-instructions-style > .a-size-mini > .a-link-normal"):
             try:
@@ -63,7 +71,14 @@ class Selenium():
                     self.item_list[name] = item.get("href")
             except AttributeError:
                 pass
-        print(len(self.item_list))
+        print(f"商品数{len(self.item_list)}")
+
+    # 商品一覧ページを1ページ進める
+    def __next_item_page(self, html_text):
+        soup = bs(html_text, 'html.parser')
+        url = soup.select(".s-pagination-next")[0].get("href")
+        url = f"https://www.amazon.co.jp/{url}"
+        self.open_url(url)
         
     # item_listの全商品のレビューを取得
     def get_review(self):
@@ -91,8 +106,9 @@ class Selenium():
 
 if __name__ == "__main__":
     sl = Selenium()
-    sl.open_url("https://www.amazon.co.jp/s?k=%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%A4%E3%83%A4%E3%83%9B%E3%83%B3&sprefix=%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%A4%E3%83%A4%E3%83%9B%E3%83%B3%2Caps%2C215&ref=nb_sb_ss_pltr-ranker-24hours_1_9")
-    html_text = sl.get_source()
-    sl.get_item_list(html_text)
+    # amazonの検索結果画面
+    sl.open_url("https://www.amazon.co.jp/s?k=%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%A4%E3%83%A4%E3%83%9B%E3%83%B3&sprefix=%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%A4%E3%83%A4%E3%83%9B%E3%83%B3%2Caps%2C215&ref=nb_sb_ss_pltr-ranker-24hours_1_9") 
+    # 商品を取得するページ数
+    sl.get_item_list_sumpage(2)
     sl.get_review()
     sl.close_driver()
