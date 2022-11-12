@@ -56,6 +56,7 @@ class Selenium():
     # numページ分の商品を取得
     def get_item_list_sumpage(self, num):
         for _ in range(num):
+            print(_)
             html_text = self.get_source()
             self.__get_item_list(html_text)
             self.__next_item_page(html_text)
@@ -109,6 +110,6 @@ if __name__ == "__main__":
     # amazonの検索結果画面
     sl.open_url("https://www.amazon.co.jp/s?k=%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%A4%E3%83%A4%E3%83%9B%E3%83%B3&sprefix=%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%A4%E3%83%A4%E3%83%9B%E3%83%B3%2Caps%2C215&ref=nb_sb_ss_pltr-ranker-24hours_1_9") 
     # 商品を取得するページ数
-    sl.get_item_list_sumpage(2)
+    sl.get_item_list_sumpage(10)
     sl.get_review()
     sl.close_driver()
